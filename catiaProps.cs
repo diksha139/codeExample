@@ -5,7 +5,7 @@ using System.Text.Json;
 using INFITF;
 using MECMOD;
 using ProductStructureTypeLib;
-using SPATypeLib; // For geometric properties like material
+using SPATypeLib;
 
 namespace SimpleCatiaExtractor
 {
@@ -144,16 +144,17 @@ namespace SimpleCatiaExtractor
             // Repeat for Y and Z
         }
 
-        // Method to get material of the part
+        // Alternative method to get material of the part using VisPropertySet
         public string GetMaterial(Product part)
         {
             try
             {
-                MaterialManager materialManager = part.MaterialManager as MaterialManager;
-                if (materialManager != null && materialManager.Materials.Count > 0)
+                // Access the visualization property set
+                AnyObject visProps = part.ReferenceProduct.GetTechnologicalObject("VisPropertySet") as AnyObject;
+                if (visProps != null)
                 {
-                    Material material = materialManager.Materials.Item(1);  // Getting the first material
-                    return material.Name;
+                    string materialName = ""; // Replace with real material extraction logic
+                    return materialName;
                 }
             }
             catch (Exception ex)
@@ -168,7 +169,7 @@ namespace SimpleCatiaExtractor
         {
             try
             {
-                var visProperties = (SPAWorkbench)part.ReferenceProduct.Parent;
+                AnyObject visProperties = part.ReferenceProduct.GetTechnologicalObject("VisPropertySet") as AnyObject;
                 if (visProperties != null)
                 {
                     // Simplified: Extract color-related properties (e.g., RGB values)
