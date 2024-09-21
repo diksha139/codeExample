@@ -97,7 +97,6 @@ namespace SimpleCatiaExtractor
                 double[] maxPoint = { double.MinValue, double.MinValue, double.MinValue };
 
                 // Example: Iterate through part geometry (this is simplified)
-                // Here, you would access the part's bodies, shapes, or geometry
                 Bodies bodies = part.ReferenceProduct.Parent as Bodies;
                 if (bodies != null)
                 {
@@ -108,9 +107,6 @@ namespace SimpleCatiaExtractor
                         // Process each shape to find min/max coordinates
                         foreach (Shape shape in body.Shapes)
                         {
-                            // Access shape's geometry to compute bounding box
-                            // (You would need to calculate real geometry here)
-                            // Placeholder logic:
                             UpdateBoundingBox(minPoint, maxPoint, shape);
                         }
                     }
@@ -138,23 +134,23 @@ namespace SimpleCatiaExtractor
         public void UpdateBoundingBox(double[] minPoint, double[] maxPoint, Shape shape)
         {
             // Placeholder logic to update min/max points based on the shape's geometry
-            // (Replace with real geometric calculations)
             minPoint[0] = Math.Min(minPoint[0], 0);  // Update based on actual coordinates
             maxPoint[0] = Math.Max(maxPoint[0], 100); // Placeholder max
             // Repeat for Y and Z
         }
 
-        // Alternative method to get material of the part using VisPropertySet
+        // Improved method to get material of the part using SPAWorkbench
         public string GetMaterial(Product part)
         {
             try
             {
-                // Access the visualization property set
-                AnyObject visProps = part.ReferenceProduct.GetTechnologicalObject("VisPropertySet") as AnyObject;
-                if (visProps != null)
+                PartDocument partDocument = part.ReferenceProduct.Parent as PartDocument;
+                if (partDocument != null)
                 {
-                    string materialName = ""; // Replace with real material extraction logic
-                    return materialName;
+                    // Use the Part object's material property
+                    Inertia inertia = partDocument.Part.Inertia;
+                    string material = inertia.GetTechnologicalObject("Material").ToString();
+                    return material;
                 }
             }
             catch (Exception ex)
@@ -173,7 +169,6 @@ namespace SimpleCatiaExtractor
                 if (visProperties != null)
                 {
                     // Simplified: Extract color-related properties (e.g., RGB values)
-                    // Placeholder for getting the actual color
                     return "Red";  // Replace with actual color extraction logic
                 }
             }
